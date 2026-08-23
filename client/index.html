@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Risk Quantification Platform</title>
+    <link rel="stylesheet" href="src/styles.css">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">🔒</span>
+                <span class="logo-text">CyberRisk</span>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-item active" data-view="dashboard">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-view="assets">
+                    <span class="nav-icon">🖥️</span> Assets
+                </a>
+                <a href="#" class="nav-item" data-view="vulnerabilities">
+                    <span class="nav-icon">🐛</span> Vulnerabilities
+                </a>
+                <a href="#" class="nav-item" data-view="risk">
+                    <span class="nav-icon">⚠️</span> Risk Scenarios
+                </a>
+                <a href="#" class="nav-item" data-view="optimize">
+                    <span class="nav-icon">🎯</span> Optimize
+                </a>
+                <a href="#" class="nav-item" data-view="controls">
+                    <span class="nav-icon">🛡️</span> Controls
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="version">v1.0.0</div>
+                <div class="badge">Open Source</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Header -->
+            <header class="header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="refresh-btn">🔄 Refresh</button>
+                    <button class="btn btn-primary" id="export-btn">📥 Export</button>
+                </div>
+            </header>
+
+            <!-- Views -->
+            <div class="content">
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view active">
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Risk Score</div>
+                            <div class="kpi-value" id="risk-score">--</div>
+                            <div class="kpi-delta" id="risk-delta">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Baseline ALE</div>
+                            <div class="kpi-value" id="baseline-ale">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Residual Risk</div>
+                            <div class="kpi-value" id="residual-risk">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Total Assets</div>
+                            <div class="kpi-value" id="total-assets">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Vulnerabilities</div>
+                            <div class="kpi-value" id="total-vulns">--</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Portfolio ROI</div>
+                            <div class="kpi-value" id="portfolio-roi">--</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-grid">
+                        <div class="chart-card large">
+                            <h3>Risk Scenario Comparison</h3>
+                            <div id="risk-scenarios-chart"></div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Asset Criticality</h3>
+                            <div id="asset-criticality-chart"></div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Investment Breakdown</h3>
+                            <div id="investment-chart"></div>
+                        </div>
+                        <div class="chart-card large">
+                            <h3>Budget vs Risk Reduction</h3>
+                            <div id="scenario-analysis-chart"></div>
+                        </div>
+                        <div class="chart-card large">
+                            <h3>Selected Control Portfolio</h3>
+                            <div id="portfolio-chart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assets View -->
+                <div id="assets-view" class="view">
+                    <div class="filters">
+                        <input type="text" class="search-input" id="asset-search" placeholder="Search assets...">
+                        <select class="filter-select" id="asset-criticality-filter">
+                            <option value="">All Criticalities</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="assets-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Criticality</th>
+                                    <th>Business Unit</th>
+                                    <th>Revenue Impact</th>
+                                    <th>Cloud</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vulnerabilities View -->
+                <div id="vulnerabilities-view" class="view">
+                    <div class="filters">
+                        <input type="text" class="search-input" id="vuln-search" placeholder="Search vulnerabilities...">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="critical-only"> Critical Only
+                        </label>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="vulns-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>CVE</th>
+                                    <th>Asset</th>
+                                    <th>CVSS</th>
+                                    <th>Contextual</th>
+                                    <th>Exploit</th>
+                                    <th>Patch</th>
+                                    <th>Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Risk View -->
+                <div id="risk-view" class="view">
+                    <div class="chart-card full">
+                        <h3>Monte Carlo Simulation Results</h3>
+                        <div id="monte-carlo-chart"></div>
+                    </div>
+                    <div class="chart-grid">
+                        <div class="chart-card">
+                            <h3>VaR Analysis</h3>
+                            <div id="var-chart"></div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Vulnerability Heatmap</h3>
+                            <div id="vuln-heatmap"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optimize View -->
+                <div id="optimize-view" class="view">
+                    <div class="optimization-panel">
+                        <div class="panel-card">
+                            <h3>Optimization Parameters</h3>
+                            <div class="form-group">
+                                <label>Budget ($)</label>
+                                <input type="number" id="opt-budget" value="3000000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Staff Capacity (FTE)</label>
+                                <input type="number" id="opt-staff" value="50" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Risk Appetite ($)</label>
+                                <input type="number" id="opt-appetite" value="5000000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Method</label>
+                                <select id="opt-method" class="form-input">
+                                    <option value="budget_constrained">Budget Constrained</option>
+                                    <option value="roi_maximizing">ROI Maximizing</option>
+                                    <option value="risk_appetite">Risk Appetite</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-block" id="run-optimization">Run Optimization</button>
+                        </div>
+                        <div class="panel-card results" id="optimization-results">
+                            <h3>Results</h3>
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <span class="result-label">Selected Controls</span>
+                                    <span class="result-value" id="res-controls">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Investment</span>
+                                    <span class="result-value" id="res-investment">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Risk Reduction</span>
+                                    <span class="result-value" id="res-reduction">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Residual Risk</span>
+                                    <span class="result-value" id="res-residual">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Portfolio ROI</span>
+                                    <span class="result-value" id="res-roi">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">NPV (5yr)</span>
+                                    <span class="result-value" id="res-npv">--</span>
+                                </div>
+                            </div>
+                            <div class="selected-controls-list" id="selected-controls-list"></div>
+                        </div>
+                    </div>
+                    <div class="chart-card full">
+                        <h3>Pareto Frontier</h3>
+                        <div id="pareto-chart"></div>
+                    </div>
+                </div>
+
+                <!-- Controls View -->
+                <div id="controls-view" class="view">
+                    <div class="table-container">
+                        <table class="data-table" id="controls-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Effectiveness</th>
+                                    <th>Implementation</th>
+                                    <th>Annual</th>
+                                    <th>5-Year TCO</th>
+                                    <th>Coverage</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <script src="src/app.js"></script>
+</body>
+</html>

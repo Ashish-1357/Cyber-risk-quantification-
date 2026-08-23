@@ -1,0 +1,12 @@
+{
+  "name": "cyber-risk-client",
+  "version": "1.0.0",
+  "description": "Cyber Risk Quantification Platform - Client",
+  "scripts": {
+    "start": "python -m http.server 5500",
+    "serve": "npx serve ."
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "license": "MIT"
+}
