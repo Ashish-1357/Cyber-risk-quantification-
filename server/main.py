@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""
-Cyber Risk Quantification Platform - FastAPI Server
-Open Source Edition | Zero Licensing Costs
 
-Usage:
-    uvicorn main:app --reload --host 0.0.0.0 --port 8000
-
-    Or:
-    python main.py
-"""
 import time
 from datetime import datetime
 from contextlib import asynccontextmanager

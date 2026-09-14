@@ -96,6 +96,18 @@ docker-compose up -d
 # API Docs: http://localhost/api/docs
 ```
 
+### Option 3: Vercel + Hosted API
+
+Vercel serves the static client only. Deploy the `server` directory to a Python-capable host such as Render, Railway, or Fly.io, using `uvicorn main:app --host 0.0.0.0 --port $PORT` as the start command. Set that service's `CORS_ORIGINS` value to the Vercel URL.
+
+The root `vercel.json` routes the client files from `client/`. After the API is deployed, add this line before `src/app.js` in `client/index.html`, replacing the URL with the deployed API origin:
+
+```html
+<script>window.CYBER_RISK_API_BASE = 'https://your-api-host.example.com/api/v1';</script>
+```
+
+In Vercel, keep the project Root Directory at the repository root, use the Other framework preset, and leave the build command empty. Redeploy after pushing these files.
+
 ### Option 3: Docker (Development)
 
 ```bash

@@ -3,9 +3,9 @@
  * Vanilla JS SPA with Plotly.js visualizations
  */
 
-const API_BASE = window.location.origin.includes('localhost') 
-    ? 'http://localhost:8000/api/v1' 
-    : '/api/v1';
+const API_BASE = window.CYBER_RISK_API_BASE || (window.location.origin.includes('localhost')
+    ? 'http://localhost:8000/api/v1'
+    : '/api/v1');
 
 // State
 let appData = {
